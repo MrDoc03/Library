@@ -1,0 +1,6 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu1" android:title="Тема"
+        android:icon="@drawable/button_svg_search"/>
+    <item android:id="@+id/menu2" android:title="Жанры" />
+
+</menu>
