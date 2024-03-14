@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/content"
+    > <!--android:windowSoftInputMode="adjustPan"
+     недает сжиматься главному окну только возможно при открытой клавиатуре будут недоступны-->
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -35,7 +38,7 @@
                 android:background="#00FFFFFF"
                 android:fontFamily="sans-serif-medium"
                 android:paddingStart="5dp"
-                android:text="Поиск"
+                android:hint="Поиск"
                 android:textSize="22sp" />
 
             <android.widget.ImageButton
@@ -77,11 +80,11 @@
                     android:orientation="vertical"
                     android:layout_weight="1">
 
-                    <Button
+                    <android.widget.Button
                         android:id="@+id/button"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Button" />
+                        />
 
                     <TextView
                         android:id="@+id/textView2"
@@ -215,7 +218,7 @@
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-
+        android:isScrollContainer="false"
         android:background="#FFA629"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -232,10 +235,11 @@
 
         <android.widget.Button
             android:id="@+id/button3"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginBottom="56dp"
             android:elevation="10dp"
+            android:background="@drawable/book_main_svg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
