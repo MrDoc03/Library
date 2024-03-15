@@ -5,8 +5,9 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
     <path
-        android:fillColor="#3DDC84"
-        android:pathData="M0,0h108v108h-108z" />
+        android:fillColor="#FFA629"
+        android:pathData="M0,0h108v108h-108z" /> <!--pathData не убрал чтобы можно было принужде востановить иконку-->
+    <!--это стандартный фон иконки при
     <path
         android:fillColor="#00000000"
         android:pathData="M9,0L9,108"
@@ -166,5 +167,5 @@
         android:fillColor="#00000000"
         android:pathData="M79,19L79,89"
         android:strokeWidth="0.8"
-        android:strokeColor="#33FFFFFF" />
+        android:strokeColor="#33FFFFFF" />-->
 </vector>

@@ -33,7 +33,6 @@
                 android:id="@+id/editText1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="0dp"
                 android:layout_weight="1"
                 android:background="#00FFFFFF"
                 android:fontFamily="sans-serif-medium"
@@ -46,8 +45,7 @@
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/button_green"
-                android:src="@drawable/button_svg_search"
-                android:visibility="visible" /><!--button_background_search-->
+                android:src="@drawable/button_svg_search"/> <!--при желании можно настроить размер и расположение лупы-->
 
         </LinearLayout>
 
@@ -60,9 +58,7 @@
         android:background="#444444"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="16dp"
-        >
+        tools:layout_editor_absoluteX="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,42 +71,47 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:background="#FFA629"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:padding="5dp">
 
                     <android.widget.Button
-                        android:id="@+id/button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
+                        android:id="@+id/button5"
+                        android:layout_width="180dp"
+                        android:layout_height="284dp"/>
 
                     <TextView
                         android:id="@+id/textView2"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="TextView" />
-
+                        android:layout_height="17sp"
+                        android:text="Играть, что бы жить. Срыв."
+                        android:textAlignment="center"
+                        android:textColor="#00680A"/>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:background="#FFA629"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:padding="5dp">
 
-                    <Button
-                        android:id="@+id/button8"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Button" />
+                    <android.widget.Button
+                        android:id="@+id/button6"
+                        android:layout_width="180dp"
+                        android:layout_height="284dp"/>
 
                     <TextView
                         android:id="@+id/textView3"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="TextView" />
+                        android:layout_height="17sp"
+                        android:text="На пороге у тьмы."
+                        android:textAlignment="center"
+                        android:textColor="#00680A"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -204,13 +205,6 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
         </LinearLayout>
     </ScrollView>
 
@@ -218,7 +212,6 @@
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:isScrollContainer="false"
         android:background="#FFA629"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -237,8 +230,7 @@
             android:id="@+id/button3"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="56dp"
-            android:elevation="10dp"
+            android:layout_marginBottom="70dp"
             android:background="@drawable/book_main_svg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -249,7 +241,6 @@
             android:id="@+id/button4"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:gravity="end"
             android:layout_marginEnd="40dp"
             android:background="@drawable/menu_line"
             app:layout_constraintBottom_toBottomOf="parent"

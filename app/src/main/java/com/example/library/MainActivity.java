@@ -1,5 +1,6 @@
 package com.example.library;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuInflater;
@@ -17,23 +18,43 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = findViewById(R.id.button);
+        Button download_image5 = findViewById(R.id.button5); //реализовать для фото кеширование и предзагрузку
         Glide.with(this)
                 .load("https://litres.ru/pub/c/cover/6130095.jpg")
                 .into(new CustomTarget<Drawable>() {
                     @Override
                     public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                        button.setBackground(resource);
+                        download_image5.setBackground(resource);
                     }
-
                     @Override
                     public void onLoadCleared(Drawable placeholder) {
-                        // Обработка очистки ресурса, если необходимо.
+                        // Обработка очистки ресурса, если необходимо
                     }
                 });
-
-        Button button4 = findViewById(R.id.button4);
-        button4.setOnClickListener(new View.OnClickListener() {
+        Button download_image6 = findViewById(R.id.button6); //реализовать для фото кеширование и предзагрузку
+        Glide.with(this)
+                .load("https://s4.knigavuhe.org/2/covers/4173/3-2.jpg?2")
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                        download_image6.setBackground(resource);
+                    }
+                    @Override
+                    public void onLoadCleared(Drawable placeholder) {
+                        // Обработка очистки ресурса, если необходимо
+                    }
+                });
+        Button switc_to_another_window5 = findViewById(R.id.button5);
+        switc_to_another_window5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Book_content.class);
+                startActivity(intent);
+                finish(); //закрытие старого окна
+            }
+        });
+        Button menu4 = findViewById(R.id.button4);
+        menu4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(MainActivity.this, v);
