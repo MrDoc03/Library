@@ -11,14 +11,37 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import androidx.appcompat.app.AppCompatActivity;
+import android.widget.SimpleCursorAdapter;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.widget.ListView;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    DatabaseHelper databaseHelper;
+    SQLiteDatabase db;
+    Cursor userCursor;
+    SimpleCursorAdapter userAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        databaseHelper = new DatabaseHelper(getApplicationContext());
+        // создаем базу данных
+        databaseHelper.create_db();
+
+        db = databaseHelper.open();
+        //получаем данные из бд в виде курсора
+        userCursor = db.rawQuery("select * from book", null);
+
         Button download_image5 = findViewById(R.id.button5); //реализовать для фото кеширование и предзагрузку
+        TextView textview = findViewById(R.id.textView2);
+        userCursor.moveToFirst();
+        textview.setText(userCursor.getString(1));
+
         Glide.with(this)
                 .load("https://litres.ru/pub/c/cover/6130095.jpg")
                 .into(new CustomTarget<Drawable>() {
