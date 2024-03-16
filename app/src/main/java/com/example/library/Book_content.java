@@ -7,12 +7,36 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Button;
-
+import android.widget.TextView;
+import android.widget.SimpleCursorAdapter;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.widget.TextView;
+import android.widget.LinearLayout;
+import java.io.*;
 public class Book_content extends AppCompatActivity {
+    DatabaseHelper databaseHelper;
+    SQLiteDatabase db;
+    Cursor userCursor;
+    SimpleCursorAdapter userAdapter;
+    String BookId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_content);
+
+        Bundle arguments = getIntent().getExtras();
+        BookId = arguments.get("id").toString();
+        TextView booktext = findViewById(R.id.textView1);
+
+        databaseHelper = new DatabaseHelper(getApplicationContext());
+        // создаем базу данных
+        databaseHelper.create_db();
+        db = databaseHelper.open();
+        //получаем данные из бд в виде курсора
+        userCursor = db.rawQuery("select Text from book where BookId=" + BookId, null);
+        userCursor.moveToFirst();
+        booktext.setText(userCursor.getString(0));
 
         ImageButton switch_to_another_window1 = findViewById(R.id.imagebutton1);
         switch_to_another_window1.setOnClickListener(new View.OnClickListener() {
@@ -24,8 +48,27 @@ public class Book_content extends AppCompatActivity {
             }
         });
 
-        Button book_description = findViewById(R.id.button3); //я оставлю пока но это нужно реализовать через смену текста а не чрез новое окно
-        book_description.setOnClickListener(new View.OnClickListener() {
+        Button book_description_and_back = findViewById(R.id.button3); //я оставлю пока но это нужно реализовать через смену текста а не чрез новое окно
+        book_description_and_back.setOnClickListener(new View.OnClickListener() { //nuh, i'd win
+            public void onClick(View v) {
+                String swicher = book_description_and_back.getText().toString();
+                switch (swicher){
+                    case "Описание":
+                        book_description_and_back.setText("Читать");
+                        userCursor = db.rawQuery("select Description from book where BookId=" + BookId, null);
+                        userCursor.moveToFirst();
+                        booktext.setText(userCursor.getString(0));
+                        break;
+                    case "Читать":
+                        book_description_and_back.setText("Описание");
+                        userCursor = db.rawQuery("select Text from book where BookId=" + BookId, null);
+                        userCursor.moveToFirst();
+                        booktext.setText(userCursor.getString(0));
+                        break;
+                }
+            }
+        });
+        /*book_description.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Dialog dialog = new Dialog(Book_content.this);
@@ -35,6 +78,6 @@ public class Book_content extends AppCompatActivity {
                 dialog.setCanceledOnTouchOutside(true);
                 dialog.show();
             }
-        });
+        });*/
     }
 }

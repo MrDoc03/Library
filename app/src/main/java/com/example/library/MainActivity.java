@@ -11,13 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import androidx.appcompat.app.AppCompatActivity;
+
 import android.widget.SimpleCursorAdapter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.LinearLayout;
+import java.io.*;
 
 public class MainActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper;
@@ -28,19 +28,61 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Button download_image5 = findViewById(R.id.button5); //реализовать для фото кеширование и предзагрузку
+
+
+
+        LinearLayout linearLayoutTest = (LinearLayout) findViewById(R.id.test1);
+
 
         databaseHelper = new DatabaseHelper(getApplicationContext());
         // создаем базу данных
         databaseHelper.create_db();
-
         db = databaseHelper.open();
         //получаем данные из бд в виде курсора
         userCursor = db.rawQuery("select * from book", null);
+        userCursor.moveToFirst();
+        do{ //крч этот цикл создает готовые окошки книг с картинкой и текстом снизу
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            Button button = new Button(this);
+            TextView textView = new TextView(this);
+            String filename = userCursor.getString(2);
+            try(InputStream inputStream = getApplicationContext().getAssets().open(filename)){
+                Drawable drawable = Drawable.createFromStream(inputStream, null);
+                button.setBackground(drawable);
+            } catch (IOException ie) {
+                ie.printStackTrace();
+                button.setText("picture gde");
+            }
 
-        Button download_image5 = findViewById(R.id.button5); //реализовать для фото кеширование и предзагрузку
+            button.setText(userCursor.getString(0));
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    button.getText();
+                    Intent intent = new Intent(MainActivity.this, Book_content.class);
+                    intent.putExtra("id", button.getText().toString());
+                    startActivity(intent);
+                    finish(); //закрытие старого окна
+                }
+            });
+
+            textView.setText(userCursor.getString(1));
+            linearLayout.addView(button);
+            linearLayout.addView(textView);
+            linearLayoutTest.addView(linearLayout);
+        } while(userCursor.moveToNext());
+
+
+
+
+
         TextView textview = findViewById(R.id.textView2);
         userCursor.moveToFirst();
         textview.setText(userCursor.getString(1));
+
+
+
 
         Glide.with(this)
                 .load("https://litres.ru/pub/c/cover/6130095.jpg")
@@ -87,4 +129,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        // Закрываем подключение и курсор
+        db.close();
+        userCursor.close();
+    }
+
 }
