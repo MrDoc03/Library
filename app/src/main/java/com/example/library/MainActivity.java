@@ -58,10 +58,9 @@ public class MainActivity extends AppCompatActivity {
         //получаем данные из бд в виде курсора
         userCursor = db.rawQuery("select * from book", null);
         userCursor.moveToFirst();
+
         do{ //крч этот цикл создает готовые окошки книг с картинкой и текстом снизу
 
-            LinearLayout linearLayoutDouble = new  LinearLayout(new ContextThemeWrapper(this.getBaseContext(), R.style.linearLayoutDouble)); //объединим две книги в пару
-            for (int i = 0; i < 2; i++) {
                 LinearLayout linearLayout = new LinearLayout(new ContextThemeWrapper(MainActivity.this, R.style.BookLayout));
                 android.widget.ImageButton button = new android.widget.ImageButton(new ContextThemeWrapper(this.getBaseContext(), R.style.BookButton), null, 0);
                 TextView textView = new TextView(new ContextThemeWrapper(this.getBaseContext(), R.style.BookText));
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 int w = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width,  getResources().getDisplayMetrics());
                 int h = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height,  getResources().getDisplayMetrics());
                 button.setLayoutParams(new ViewGroup.LayoutParams(w, h));
-
+                linearLayout.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         button.getId();
@@ -90,11 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 linearLayout.addView(button);
                 linearLayout.addView(textView);
 
-                linearLayoutDouble.addView(linearLayout);
-            }
-
-            linearLayoutTest.addView(linearLayoutDouble);
-
+                linearLayoutTest.addView(linearLayout);
         } while(userCursor.moveToNext());
 
 

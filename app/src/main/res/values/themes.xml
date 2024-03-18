@@ -22,29 +22,24 @@
     </style>
 
 
-    <style name="linearLayoutDouble">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">5dp</item>
-        <item name="android:orientation">horizontal</item>
-        <item name="android:padding">5dp</item>
-        <item name="android:gravity">center</item>
 
 
-    </style>
+
+
     <style name="BookLayout">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">5dp</item>
         <item name="android:orientation">vertical</item>
         <item name="android:padding">5dp</item>
-        <item name="android:background">#FFA629</item>
+        <item name="android:background">@drawable/border_shape</item>
+        <item name="android:gravity"> center_horizontal</item>
     </style>
     <style name="BookButton">
         <item name="android:layout_width">180dp</item>
         <item name="android:layout_height">284dp</item>
         <item name="android:scaleType">fitXY</item>
-        <item name="android:background">@drawable/border_shape</item>
+
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
 
