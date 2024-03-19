@@ -4,6 +4,7 @@ import android.app.Dialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Button;
@@ -13,6 +14,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.TextView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import java.io.*;
 public class Book_content extends AppCompatActivity {
     DatabaseHelper databaseHelper;
@@ -68,6 +71,32 @@ public class Book_content extends AppCompatActivity {
                 }
             }
         });
+
+        Button buttonFav = findViewById(R.id.button2);
+        buttonFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userCursor = db.rawQuery("select * from favoriteBooks where (Email='sanya2012@gmail.com' and BookId="+BookId+")", null);
+                if ((userCursor!= null) && (userCursor.getCount() > 0) ) {
+                    db.execSQL("DELETE from favoriteBooks where (Email='sanya2012@gmail.com' AND BookId="+BookId+")");
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Удалено из любимых!", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }else{
+                    //db.execSQL("INSERT INTO favoriteBooks BookId, Email VALUES (" + BookId + ", 'sanya2012@gmail.com')");
+                    db.execSQL("INSERT INTO \"main\".\"favoriteBooks\"\n" +
+                            "(\"BookId\", \"Email\")\n" +
+                            "VALUES ("+BookId+", 'sanya2012@gmail.com');");
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Добавлено в любимые!", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            }
+        });
+
+
         /*book_description.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,5 +108,14 @@ public class Book_content extends AppCompatActivity {
                 dialog.show();
             }
         });*/
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        // Закрываем подключение и курсор
+        db.close();
+        userCursor.close();
+
     }
 }

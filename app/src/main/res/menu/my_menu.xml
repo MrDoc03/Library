@@ -3,8 +3,8 @@
     > <!--разобраться как сделать здесь у этих элементов фон серый #444444,
     текст зеленый #00680A
     и добавить svg слева-->
-    <item android:id="@+id/menu1" android:title="Тема"
+    <item android:id="@+id/menuThemes" android:title="Тема"
         android:icon="@drawable/button_svg_search"
         android:background="#444444"/>
-    <item android:id="@+id/menu2" android:title="Жанры" />
+    <item android:id="@+id/menuGenres" android:title="Жанры" />
 </menu>
