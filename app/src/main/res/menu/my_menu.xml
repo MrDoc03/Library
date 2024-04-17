@@ -1,10 +1,28 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#444444"
-    > <!--разобраться как сделать здесь у этих элементов фон серый #444444,
-    текст зеленый #00680A
-    и добавить svg слева-->
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
     <item android:id="@+id/menuThemes" android:title="Тема"
         android:icon="@drawable/button_svg_search"
-        android:background="#444444"/>
-    <item android:id="@+id/menuGenres" android:title="Жанры" />
+         />
+    <item android:id="@+id/menuGenres" android:title="Жанры"
+        android:icon="@drawable/button_svg_search"
+        >
+
+    <menu>
+
+        <item android:title="LitRPG"
+            android:icon="@drawable/button_svg_search"
+            />
+        <item android:title="Боевое фэнтези" />
+        <item android:title="Борьба за выживание" />
+        <item android:title="Виртуальная реальность" />
+        <item android:title="Героическое фэнтези" />
+        <item android:title="Роман" />
+        <item android:title="Боевая фантастика" />
+        <item android:title="Бояръ-Аниме" />
+        <item android:title="Фэнтези" />
+    </menu>
+    </item>
+
 </menu>

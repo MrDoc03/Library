@@ -1,5 +1,6 @@
 package com.example.library;
 
+import static com.example.library.R.menu.genres;
 import static com.example.library.R.menu.my_menu;
 
 import android.content.Context;
@@ -25,7 +26,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
+import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper;
     SQLiteDatabase db;
@@ -91,34 +96,53 @@ public class MainActivity extends AppCompatActivity {
 
 
         Button menu4 = findViewById(R.id.button4);
+
         menu4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popup =  new PopupMenu(MainActivity.this, v);
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(my_menu, popup.getMenu());
+                PopupMenu popup = new PopupMenu(MainActivity.this, v);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.my_menu, popup.getMenu());
 
                 popup.show();
             }
         });
+
+
+
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if(id == R.id.menuThemes) {
-
+        if (id == R.id.menuThemes) {
+            ThemeUtils.toggleTheme(MainActivity.this);
+            recreate(); // Пересоздаем активность для применения новой темы
             return true;
         }
-        else if (id == R.id.menuGenres) {
-
+        else if (item.getItemId() == R.id.menuGenres) {
+            getMenuInflater().inflate(R.menu.genres, item.getSubMenu());
             return true;
+        } else
+        {
+
         }
 
         return super.onOptionsItemSelected(item);
+
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(my_menu, menu);
+        return true;
+    }
+
+
+
+
+
+
     private void DBselect(String sql) {
         LinearLayout linearLayoutTest = (LinearLayout) findViewById(R.id.test1);
         linearLayoutTest.removeAllViews();

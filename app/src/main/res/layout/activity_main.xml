@@ -36,6 +36,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:paddingStart="5dp"
                 android:hint="Поиск"
+                android:singleLine="true"
                 android:textSize="22sp" />
 
             <android.widget.ImageButton
