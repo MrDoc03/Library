@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String task = searchBarText.getText().toString();
 
-                String sqltask = "select * from book where (Author like \"%" +task+ "%\" or Year like \"%" +task+ "%\" or Genre like \"%" +task+ "%\") ";
+                String sqltask = "select * from book where (Title like \"%" +task+ "%\" or Author like \"%" +task+ "%\" or Year like \"%" +task+ "%\" or Genre like \"%" +task+ "%\") ";
                 //select * from book where (Author like "%task%" or Year like "%task%" or Genre like "%task%")
                 DBselect(sqltask);
             }
