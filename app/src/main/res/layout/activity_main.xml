@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:id="@+id/content"
-    > <!--android:windowSoftInputMode="adjustPan"
-     недает сжиматься главному окну только возможно при открытой клавиатуре будут недоступны-->
-
+    >
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -69,10 +67,6 @@
             android:gravity="center"
             >
 
-
-
-
-
         </LinearLayout>
     </ScrollView>
 
@@ -93,8 +87,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
 
         <android.widget.Button
             android:id="@+id/button4"
