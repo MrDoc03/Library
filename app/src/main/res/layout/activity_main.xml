@@ -107,7 +107,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginBottom="-30dp"
-        android:background="@drawable/book_main_svg"
+        android:background="@drawable/button_main_full"
         app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
