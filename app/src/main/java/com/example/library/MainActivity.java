@@ -1,6 +1,6 @@
 package com.example.library;
 
-import static com.example.library.R.menu.genres;
+
 import static com.example.library.R.menu.my_menu;
 
 import android.content.Context;
@@ -31,6 +31,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.Console;
+
 public class MainActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper;
     SQLiteDatabase db;
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
         //реализовать для фото кеширование и предзагрузку
 
@@ -101,10 +104,43 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(MainActivity.this, v);
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.my_menu, popup.getMenu());
-
+                popup.getMenu().add(Menu.NONE, 0, Menu.NONE, "Тема");
+                popup.getMenu().add(Menu.NONE, 1, Menu.NONE, "Жанры");
                 popup.show();
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case 0:
+                                ThemeUtils.toggleTheme(MainActivity.this);
+                                recreate(); // Пересоздаем активность для применения новой темы
+
+                                break;
+                            case 1:
+                                PopupMenu popup = new PopupMenu(MainActivity.this, v);
+                                popup.getMenu().add(Menu.NONE, 0, Menu.NONE, "LitRPG");
+                                popup.getMenu().add(Menu.NONE, 1, Menu.NONE, "Боевое фэнтези");
+                                popup.getMenu().add(Menu.NONE, 2, Menu.NONE, "Борьба за выживание");
+                                popup.getMenu().add(Menu.NONE, 3, Menu.NONE, "Виртуальная реальность");
+                                popup.getMenu().add(Menu.NONE, 4, Menu.NONE, "Героическое фэнтези");
+                                popup.getMenu().add(Menu.NONE, 5, Menu.NONE, "Роман");
+                                popup.getMenu().add(Menu.NONE, 6, Menu.NONE, "Боевая фантастика");
+                                popup.getMenu().add(Menu.NONE, 7, Menu.NONE, "Бояръ-Аниме");
+                                popup.getMenu().add(Menu.NONE, 8, Menu.NONE, "Фэнтези");
+                                popup.show();
+                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem menuItem) {
+                                        showToast(menuItem.getTitle().toString());
+                                        DBselect("select * from book where (Genre like \"%" +menuItem.getTitle()+ "%\") ");
+                                        return true;
+                                    }
+                                });
+                                break;
+                        }
+                        return true;
+                    }
+                });
             }
         });
 
@@ -112,7 +148,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.my_menu, menu);
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -120,23 +160,41 @@ public class MainActivity extends AppCompatActivity {
             ThemeUtils.toggleTheme(MainActivity.this);
             recreate(); // Пересоздаем активность для применения новой темы
             return true;
-        }
-        else if (item.getItemId() == R.id.menuGenres) {
-            getMenuInflater().inflate(R.menu.genres, item.getSubMenu());
+        } else if (id == R.id.LitRPG) {
+            showToast("LitRPG");
             return true;
-        } else
-        {
-
+        } else if (id == R.id.BattleFantasy) {
+            showToast("Боевое фэнтези");
+            return true;
+        } else if (id == R.id.Survival) {
+            showToast("Борьба за выживание");
+            return true;
+        } else if (id == R.id.VR) {
+            showToast("Виртуальная реальность");
+            return true;
+        } else if (id == R.id.HeroicFantasy) {
+            showToast("Героическое фэнтези");
+            return true;
+        } else if (id == R.id.Romance) {
+            showToast("Роман");
+            return true;
+        } else if (id == R.id.BattleFiction) {
+            showToast("Боевая фантастика");
+            return true;
+        } else if (id == R.id.Anime) {
+            showToast("Бояръ-Аниме");
+            return true;
+        } else if (id == R.id.Fantasy) {
+            showToast("Фэнтези");
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
 
+    private void showToast(String message) {
+        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(my_menu, menu);
-        return true;
-    }
+
 
 
 
