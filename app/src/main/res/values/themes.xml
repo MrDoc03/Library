@@ -12,7 +12,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-
     </style>
     <style name="YourTheme.NoActionBar.FullScreen" parent="@style/Theme.AppCompat.Light">
         <item name="windowNoTitle">true</item>
@@ -20,11 +19,6 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
-
-
-
-
-
 
     <style name="BookLayout">
         <item name="android:layout_width">match_parent</item>
@@ -68,6 +62,11 @@
         <item name="android:textSize">17sp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">#FFA629</item>
+    </style>
 
+    <style name="ScrollViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:background">#777777</item>
     </style>
 </resources>

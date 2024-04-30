@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(MainActivity.this, v);
-                popup.getMenu().add(Menu.NONE, 0, Menu.NONE, "Тема");
+                //popup.getMenu().add(Menu.NONE, 0, Menu.NONE, "Тема");
                 popup.getMenu().add(Menu.NONE, 1, Menu.NONE, "Жанры");
                 popup.show();
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
