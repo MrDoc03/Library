@@ -35,10 +35,10 @@ public class Book_content extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(getApplicationContext());
         // создаем базу данных
-        databaseHelper.create_db();
-        db = databaseHelper.open();
+
+        db = databaseHelper.getReadableDatabase();
         //получаем данные из бд в виде курсора
-        userCursor = db.rawQuery("select Text from book where BookId=" + BookId, null);
+        userCursor = db.rawQuery("select Text from books where BookId=" + BookId, null);
         userCursor.moveToFirst();
         booktext.setText(userCursor.getString(0));
 

@@ -1,12 +1,15 @@
 package com.example.library;
 
 
+import static android.content.ContentValues.TAG;
 import static com.example.library.R.menu.my_menu;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuInflater;
@@ -32,34 +35,46 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+
 import java.io.Console;
 
 public class MainActivity extends AppCompatActivity {
-    DatabaseHelper databaseHelper;
-    SQLiteDatabase db;
-    Cursor userCursor;
-    SimpleCursorAdapter userAdapter;
-    LinearLayout linearLayoutTest;
-    EditText searchBarText;
-    ImageButton searchImageButton;
+    private DatabaseHelper databaseHelper;
+    private SQLiteDatabase db;
+    private Cursor userCursor;
+    private void initDatabase() {
+        databaseHelper = new DatabaseHelper(this); // Передайте контекст вашей активности или другого контекста
+        // Загрузка пользователей
+        new FetchUsersDataTask(databaseHelper).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        // Загрузка книг
+        new FetchBooksDataTask(databaseHelper, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        // Загрузка истории чтения
+        new FetchReadingHistoriesTask(databaseHelper).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        // Загрузка избранных книг
+        new FetchFavoriteBooksTask(databaseHelper).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        db = databaseHelper.getReadableDatabase();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
-        //реализовать для фото кеширование и предзагрузку
-
-        databaseHelper = new DatabaseHelper(getApplicationContext());
-        // создаем базу данных
-        databaseHelper.create_db();
-        db = databaseHelper.open();
-        //получаем данные из бд в виде курсора
 
         LinearLayout linearLayoutTest = (LinearLayout) findViewById(R.id.test1);
         linearLayoutTest.removeAllViews();
 
-        String sql = "select * from book";
+    // Проверяем, что база данных инициализирована
+        if (databaseHelper == null) {
+            initDatabase();
+        } else{
+            db = databaseHelper.getReadableDatabase();
+        }
+
+
+        String sql = "select * from books";
         DBselect(sql);
 
         EditText searchBarText = findViewById(R.id.editText1);
@@ -69,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String task = searchBarText.getText().toString();
 
-                String sqltask = "select * from book where (Title like \"%" +task+ "%\" or Author like \"%" +task+ "%\" or Year like \"%" +task+ "%\" or Genre like \"%" +task+ "%\") ";
+                String sqltask = "select * from books where (Title like \"%" +task+ "%\" or Author like \"%" +task+ "%\" or Year like \"%" +task+ "%\" or Genre like \"%" +task+ "%\") ";
                 //select * from book where (Author like "%task%" or Year like "%task%" or Genre like "%task%")
                 DBselect(sqltask);
             }
@@ -81,7 +96,13 @@ public class MainActivity extends AppCompatActivity {
                 EditText searchBarText = findViewById(R.id.editText1);
                 searchBarText.setText("");
                 searchBarText.clearFocus();
-                String sqltask = "select * from book join favoriteBooks on book.BookId=favoriteBooks.BookId";
+                // Получаем экземпляр синглтона UserManager
+                UserManager userManager = UserManager.getInstance();
+
+                // Получаем значение почты
+                String email = userManager.getEmail();
+                String sqltask = "select * from books join favoriteBooks on books.BookId=favoritebooks.BookId WHERE favoritebooks.Email = " + "\"" +email + "\"";
+                Log.d(TAG, sqltask);
                 DBselect(sqltask);
             }
         });
@@ -92,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 EditText searchBarText = findViewById(R.id.editText1);
                 searchBarText.setText("");
                 searchBarText.clearFocus();
-                String sqltask = "select * from book";
+                String sqltask = "select * from books";
                 DBselect(sqltask);
             }
         });
@@ -132,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public boolean onMenuItemClick(MenuItem menuItem) {
                                         showToast(menuItem.getTitle().toString());
-                                        DBselect("select * from book where (Genre like \"%" +menuItem.getTitle()+ "%\") ");
+                                        DBselect("select * from books where (Genre like \"%" +menuItem.getTitle()+ "%\") ");
                                         return true;
                                     }
                                 });
@@ -144,10 +165,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.my_menu, menu);
@@ -195,21 +214,25 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
-
-
-
-
-
-
     private void DBselect(String sql) {
-        LinearLayout linearLayoutTest = (LinearLayout) findViewById(R.id.test1);
+        LinearLayout linearLayoutTest = findViewById(R.id.test1); // Получаем ссылку на ваш LinearLayout
         linearLayoutTest.removeAllViews();
+
+        // Проверяем, что база данных инициализирована
+        if (databaseHelper == null) {
+            initDatabase();
+        } else{
+            db = databaseHelper.getReadableDatabase();
+        }
+        // Выполняем запрос и получаем курсор
+
         userCursor = db.rawQuery(sql, null);
         if ((userCursor!= null) && (userCursor.getCount() > 0) ) {
             userCursor.moveToFirst();
 
             do { //крч этот цикл создает готовые окошки книг с картинкой и текстом
 
+                // Создаем новый экземпляр ImageButton для каждой книги
                 android.widget.ImageButton button = new android.widget.ImageButton(new ContextThemeWrapper(this.getBaseContext(), R.style.BookButton), null, 0);
                 LinearLayout linearLayout = new LinearLayout(new ContextThemeWrapper(MainActivity.this, R.style.BookLayoutText));
                 TextView textView = new TextView(new ContextThemeWrapper(this.getBaseContext(), R.style.BookText));
@@ -217,14 +240,16 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout linearLayoutFull = new LinearLayout(new ContextThemeWrapper(MainActivity.this, R.style.BookLayout));
                 linearLayoutFull.setOrientation(LinearLayout.HORIZONTAL);
 
-
                 textView.setText(userCursor.getString(1));
                 String info = userCursor.getString(3) + "\n" + userCursor.getString(4) + "\n" + userCursor.getString(5);
                 textViewInfo.setText(info);
 
-                String filename = userCursor.getString(2);
-                int resID = getResources().getIdentifier(filename, "drawable", getPackageName());
-                button.setImageResource(resID);
+                String imageUrl = "http://192.168.0.102/TheSite/BookPics/" + userCursor.getString(2); // замените на ваш URL изображения
+
+                Glide.with(MainActivity.this)
+                        .load(imageUrl)
+                        .into(button);
+
                 button.setId(userCursor.getInt(0));
                 int width = 175;
                 int height = 284;
@@ -244,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
+                Log.d(TAG, userCursor.getString(1));
                 linearLayout.addView(textView);
                 linearLayout.addView(textViewInfo);
                 linearLayoutFull.addView(button);
@@ -260,6 +285,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void CreateBooks(){
+
+    }
     @Override
     public void onDestroy(){
         super.onDestroy();

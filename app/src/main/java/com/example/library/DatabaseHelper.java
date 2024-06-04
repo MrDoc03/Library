@@ -1,63 +1,158 @@
 package com.example.library;
 
-import android.database.SQLException;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+public class DatabaseHelper extends SQLiteOpenHelper {
 
-class DatabaseHelper extends SQLiteOpenHelper {
-    private static String DB_PATH; // полный путь к базе данных
-    private static String DB_NAME = "library.db";
-    private static final int SCHEMA = 1; // версия базы данных
-    static final String TABLE = "users"; // название таблицы в бд
-    // названия столбцов
-    static final String COLUMN_ID = "_id";
-    static final String COLUMN_NAME = "name";
-    static final String COLUMN_YEAR = "year";
-    private Context myContext;
+    private static final String DATABASE_NAME = "library.db";
+    private static final String TABLE_USERS = "users";
+    private static final String TABLE_BOOKS = "books";
+    private static final String TABLE_READING_HISTORIES = "readinghistories";
+    private static final String TABLE_FAVORITE_BOOKS = "favoritebooks";
 
-    DatabaseHelper(Context context) {
-        super(context, DB_NAME, null, SCHEMA);
-        this.myContext=context;
-        DB_PATH =context.getFilesDir().getPath() + DB_NAME;
+    // Поля таблицы пользователей
+    private static final String COL_USER_ID = "UserId";
+    private static final String COL_EMAIL = "Email";
+    private static final String COL_LOGIN = "Login";
+    private static final String COL_PASSWORD = "Password";
+
+    // Поля таблицы книг
+    private static final String COL_BOOK_ID = "BookId";
+    private static final String COL_TITLE = "Title";
+    private static final String COL_IMAGE_URL = "ImageUrl";
+    private static final String COL_AUTHOR = "Author";
+    private static final String COL_YEAR = "Year";
+    private static final String COL_GENRE = "Genre";
+    private static final String COL_DESCRIPTION = "Description";
+    private static final String COL_TEXT = "Text";
+
+    // Поля таблицы истории чтения
+    private static final String COL_READING_ID = "ReadingId";
+    private static final String COL_LAST_READ_PAGE = "LastReadPage";
+
+    // Поля таблицы любимых книг
+    private static final String COL_FAVORITE_ID = "FavoriteId";
+
+    public DatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, 1);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) { }
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion,  int newVersion) { }
+    public void onCreate(SQLiteDatabase db) {
+        // Создание таблицы пользователей
+        db.execSQL("CREATE TABLE " + TABLE_USERS + " (" +
+                COL_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_EMAIL + " TEXT, " +
+                COL_LOGIN + " TEXT, " +
+                COL_PASSWORD + " TEXT)");
 
-    void create_db(){
+        // Создание таблицы книг
+        db.execSQL("CREATE TABLE " + TABLE_BOOKS + " (" +
+                COL_BOOK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_TITLE + " TEXT, " +
+                COL_IMAGE_URL + " TEXT, " +
+                COL_AUTHOR + " TEXT, " +
+                COL_YEAR + " INTEGER, " +
+                COL_GENRE + " TEXT, " +
+                COL_DESCRIPTION + " TEXT, " +
+                COL_TEXT + " TEXT)");
 
-        File file = new File(DB_PATH);
-        if (!file.exists()) {
-            //получаем локальную бд как поток
-            try(InputStream myInput = myContext.getAssets().open(DB_NAME);
-                // Открываем пустую бд
-                OutputStream myOutput = new FileOutputStream(DB_PATH)) {
+        // Создание таблицы истории чтения
+        db.execSQL("CREATE TABLE " + TABLE_READING_HISTORIES + " (" +
+                COL_READING_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_BOOK_ID + " INTEGER, " +
+                COL_EMAIL + " TEXT, " +
+                COL_LAST_READ_PAGE + " INTEGER, " +
+                "FOREIGN KEY(" + COL_BOOK_ID + ") REFERENCES " + TABLE_BOOKS + "(" + COL_BOOK_ID + "), " +
+                "FOREIGN KEY(" + COL_EMAIL + ") REFERENCES " + TABLE_USERS + "(" + COL_EMAIL + "))");
 
-                // побайтово копируем данные
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = myInput.read(buffer)) > 0) {
-                    myOutput.write(buffer, 0, length);
-                }
-                myOutput.flush();
-            }
-            catch(IOException ex){
-                Log.d("DatabaseHelper", ex.getMessage());
-            }
-        }
+        // Создание таблицы любимых книг
+        db.execSQL("CREATE TABLE " + TABLE_FAVORITE_BOOKS + " (" +
+                COL_FAVORITE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_BOOK_ID + " INTEGER, " +
+                COL_EMAIL + " TEXT, " +
+                "FOREIGN KEY(" + COL_BOOK_ID + ") REFERENCES " + TABLE_BOOKS + "(" + COL_BOOK_ID + "), " +
+                "FOREIGN KEY(" + COL_EMAIL + ") REFERENCES " + TABLE_USERS + "(" + COL_EMAIL + "))");
     }
-    public SQLiteDatabase open()throws SQLException {
 
-        return SQLiteDatabase.openDatabase(DB_PATH, null, SQLiteDatabase.OPEN_READWRITE);
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITE_BOOKS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_READING_HISTORIES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOOKS);
+        onCreate(db);
+    }
+
+    // Добавление пользователя
+    public boolean addUser(String email, String login, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_EMAIL, email);
+        contentValues.put(COL_LOGIN, login);
+        contentValues.put(COL_PASSWORD, password);
+        long result = db.insert(TABLE_USERS, null, contentValues);
+        return result != -1;
+    }
+
+    // Добавление книги
+    public boolean addBook(String title, String imageUrl, String author, int year, String genre, String description, String text) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Title", title);
+        contentValues.put("ImageUrl", imageUrl);
+        contentValues.put("Author", author);
+        contentValues.put("Year", year);
+        contentValues.put("Genre", genre);
+        contentValues.put("Description", description);
+        contentValues.put("Text", text);
+        long result = db.insert("Books", null, contentValues);
+        return result != -1;
+    }
+    // Метод для удаления всех записей из таблицы книг
+    public void deleteAllBooks() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete("Books", null, null);
+        String resetQuery = "UPDATE sqlite_sequence SET seq = 1 WHERE name = ?";
+        db.execSQL(resetQuery, new String[]{"books"});
+        db.close();
+    }
+
+    // Добавление записи в историю чтения
+    public boolean addReadingHistory(int bookId, String email, int lastReadPage) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_BOOK_ID, bookId);
+        contentValues.put(COL_EMAIL, email);
+        contentValues.put(COL_LAST_READ_PAGE, lastReadPage);
+        long result = db.insert(TABLE_READING_HISTORIES, null, contentValues);
+        return result != -1;
+    }
+
+    // Получение истории чтения по электронной почте пользователя
+    public Cursor getReadingHistoryByEmail(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_READING_HISTORIES + " WHERE " + COL_EMAIL + " = ?", new String[]{email});
+    }
+
+    // Добавление книги в список любимых
+    public boolean addFavoriteBook(int bookId, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_BOOK_ID, bookId);
+        contentValues.put(COL_EMAIL, email);
+        long result = db.insert(TABLE_FAVORITE_BOOKS, null, contentValues);
+        return result != -1;
+    }
+
+    // Получение списка любимых книг по электронной почте пользователя
+    public Cursor getFavoriteBooksByEmail(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_FAVORITE_BOOKS + " WHERE " + COL_EMAIL + " = ?", new String[]{email});
     }
 }
