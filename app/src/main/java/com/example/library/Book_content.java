@@ -59,13 +59,13 @@ public class Book_content extends AppCompatActivity {
                 switch (swicher){
                     case "Описание":
                         book_description_and_back.setText("Читать");
-                        userCursor = db.rawQuery("select Description from book where BookId=" + BookId, null);
+                        userCursor = db.rawQuery("select Description from books where BookId=" + BookId, null);
                         userCursor.moveToFirst();
                         booktext.setText(userCursor.getString(0));
                         break;
                     case "Читать":
                         book_description_and_back.setText("Описание");
-                        userCursor = db.rawQuery("select Text from book where BookId=" + BookId, null);
+                        userCursor = db.rawQuery("select Text from books where BookId=" + BookId, null);
                         userCursor.moveToFirst();
                         booktext.setText(userCursor.getString(0));
                         break;
@@ -77,18 +77,23 @@ public class Book_content extends AppCompatActivity {
         buttonFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userCursor = db.rawQuery("select * from favoriteBooks where (Email='sanya2012@gmail.com' and BookId="+BookId+")", null);
+                UserManager userManager = UserManager.getInstance();
+                String email = userManager.getEmail();
+                userCursor = db.rawQuery("select * from favoritebooks where (Email= \" "+ email  +" \" and BookId="+BookId+")", null);
                 if ((userCursor!= null) && (userCursor.getCount() > 0) ) {
-                    db.execSQL("DELETE from favoriteBooks where (Email='sanya2012@gmail.com' AND BookId="+BookId+")");
+
+                    String sqlq = "DELETE from favoritebooks where (Email= \" "+ email +"\" AND BookId="+BookId+")";
+                    db.execSQL(sqlq);
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Удалено из любимых!", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }else{
                     //db.execSQL("INSERT INTO favoriteBooks BookId, Email VALUES (" + BookId + ", 'sanya2012@gmail.com')");
-                    db.execSQL("INSERT INTO \"main\".\"favoriteBooks\"\n" +
+
+                    db.execSQL("INSERT INTO \"main\".\"favoritebooks\"\n" +
                             "(\"BookId\", \"Email\")\n" +
-                            "VALUES ("+BookId+", 'sanya2012@gmail.com');");
+                            "VALUES ("+BookId+", \""+email+"\");");
                     Toast toast = Toast.makeText(getApplicationContext(),
                             "Добавлено в любимые!", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);

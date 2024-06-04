@@ -25,6 +25,9 @@ public class FetchFavoriteBooksTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         try {
+
+
+
             URL url = new URL(API_URL);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");

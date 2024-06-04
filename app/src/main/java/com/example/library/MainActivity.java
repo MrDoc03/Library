@@ -66,12 +66,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout linearLayoutTest = (LinearLayout) findViewById(R.id.test1);
         linearLayoutTest.removeAllViews();
 
-    // Проверяем, что база данных инициализирована
-        if (databaseHelper == null) {
-            initDatabase();
-        } else{
-            db = databaseHelper.getReadableDatabase();
-        }
+
 
 
         String sql = "select * from books";

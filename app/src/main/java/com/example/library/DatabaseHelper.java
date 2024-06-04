@@ -98,7 +98,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(TABLE_USERS, null, contentValues);
         return result != -1;
     }
-
+    public void deleteUsers() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("users", null, null);
+        db.close();
+    }
     // Добавление книги
     public boolean addBook(String title, String imageUrl, String author, int year, String genre, String description, String text) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -150,6 +154,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    public void deleteFavoriteBooks() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("favoritebooks", null, null);
+        db.close();
+    }
     // Получение списка любимых книг по электронной почте пользователя
     public Cursor getFavoriteBooksByEmail(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
