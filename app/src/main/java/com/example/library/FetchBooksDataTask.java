@@ -14,7 +14,7 @@ import java.net.URL;
 public class FetchBooksDataTask extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = FetchBooksDataTask.class.getSimpleName();
-    private static final String API_URL = "http://192.168.0.102/api/books_api.php"; // Замените на ваш URL API
+    private static final String API_URL = "http://192.168.0.103/api/books_api.php"; // Замените на ваш URL API
     private DatabaseHelper dbHelper;
     private MainActivity mainActivity;
     public FetchBooksDataTask(DatabaseHelper dbHelper, MainActivity mainActivity) {
@@ -52,12 +52,8 @@ public class FetchBooksDataTask extends AsyncTask<Void, Void, Void> {
                 String title = jsonObject.getString("Title");
                 String imageUrl = jsonObject.getString("ImageUrl");
                 String author = jsonObject.getString("Author");
-                int year;
-                try {
-                    year = Integer.parseInt(jsonObject.getString("Year"));
-                } catch (NumberFormatException e) {
-                    year = 0; // или любое другое значение по умолчанию
-                }
+                String year= jsonObject.getString("Year");
+
                 String genre = jsonObject.getString("Genre");
                 String description = jsonObject.getString("Description");
                 String text = jsonObject.getString("Text");

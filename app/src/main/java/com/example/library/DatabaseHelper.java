@@ -56,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_TITLE + " TEXT, " +
                 COL_IMAGE_URL + " TEXT, " +
                 COL_AUTHOR + " TEXT, " +
-                COL_YEAR + " INTEGER, " +
+                COL_YEAR + " TEXT, " +
                 COL_GENRE + " TEXT, " +
                 COL_DESCRIPTION + " TEXT, " +
                 COL_TEXT + " TEXT)");
@@ -104,7 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
     // Добавление книги
-    public boolean addBook(String title, String imageUrl, String author, int year, String genre, String description, String text) {
+    public boolean addBook(String title, String imageUrl, String author, String year, String genre, String description, String text) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("Title", title);

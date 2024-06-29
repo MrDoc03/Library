@@ -4,6 +4,7 @@ package com.example.library;
 import static android.content.ContentValues.TAG;
 import static com.example.library.R.menu.my_menu;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Menu;
@@ -34,12 +36,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import com.bumptech.glide.Glide;
-
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.Manifest;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import java.io.Console;
 
 public class MainActivity extends AppCompatActivity {
+
+    // Идентификатор уведомления
+    private static final int NOTIFY_ID = 101;
+    // Идентификатор канала
+    private static String CHANNEL_ID = "Cat channel";
+
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase db;
     private Cursor userCursor;
@@ -57,20 +77,22 @@ public class MainActivity extends AppCompatActivity {
         db = databaseHelper.getReadableDatabase();
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
-        LinearLayout linearLayoutTest = (LinearLayout) findViewById(R.id.test1);
-        linearLayoutTest.removeAllViews();
+        LinearLayout BookList = (LinearLayout) findViewById(R.id.BookList);
+        BookList.removeAllViews();
 
-
-
-
-        String sql = "select * from books";
-        DBselect(sql);
+        String sqltask = "select * from books";
+        DBselect(sqltask);
 
         EditText searchBarText = findViewById(R.id.editText1);
         searchBarText.setText("");
@@ -110,6 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 searchBarText.clearFocus();
                 String sqltask = "select * from books";
                 DBselect(sqltask);
+
+
             }
         });
 
@@ -209,9 +233,9 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void DBselect(String sql) {
-        LinearLayout linearLayoutTest = findViewById(R.id.test1); // Получаем ссылку на ваш LinearLayout
-        linearLayoutTest.removeAllViews();
+    public void DBselect(String sql) {
+        LinearLayout BookList = findViewById(R.id.BookList); // Получаем ссылку на ваш LinearLayout
+        BookList.removeAllViews();
 
         // Проверяем, что база данных инициализирована
         if (databaseHelper == null) {
@@ -226,50 +250,37 @@ public class MainActivity extends AppCompatActivity {
             userCursor.moveToFirst();
 
             do { //крч этот цикл создает готовые окошки книг с картинкой и текстом
+                LayoutInflater inflater = LayoutInflater.from(this);
+                View book_example = inflater.inflate(R.layout.book_example, BookList, false);
+                TextView Title = book_example.findViewById(R.id.Title);
+                Title.setText(userCursor.getString(1));
 
-                // Создаем новый экземпляр ImageButton для каждой книги
-                android.widget.ImageButton button = new android.widget.ImageButton(new ContextThemeWrapper(this.getBaseContext(), R.style.BookButton), null, 0);
-                LinearLayout linearLayout = new LinearLayout(new ContextThemeWrapper(MainActivity.this, R.style.BookLayoutText));
-                TextView textView = new TextView(new ContextThemeWrapper(this.getBaseContext(), R.style.BookText));
-                TextView textViewInfo = new TextView(new ContextThemeWrapper(this.getBaseContext(), R.style.BookTextInfo));
-                LinearLayout linearLayoutFull = new LinearLayout(new ContextThemeWrapper(MainActivity.this, R.style.BookLayout));
-                linearLayoutFull.setOrientation(LinearLayout.HORIZONTAL);
+                TextView Author = book_example.findViewById(R.id.Author);
+                Author.setText(userCursor.getString(3));
 
-                textView.setText(userCursor.getString(1));
-                String info = userCursor.getString(3) + "\n" + userCursor.getString(4) + "\n" + userCursor.getString(5);
-                textViewInfo.setText(info);
+                TextView Type = book_example.findViewById(R.id.Type);
+                Type.setText(userCursor.getString(5));
 
-                String imageUrl = "http://192.168.0.102/TheSite/BookPics/" + userCursor.getString(2); // замените на ваш URL изображения
+                TextView Deadline = book_example.findViewById(R.id.Deadline);
+                Deadline.setText(userCursor.getString(4));
 
-                Glide.with(MainActivity.this)
-                        .load(imageUrl)
-                        .into(button);
+                LinearLayout BookLayout = book_example.findViewById(R.id.BookLayout);
+                BookLayout.setId(Integer.parseInt(userCursor.getString(0)));
 
-                button.setId(userCursor.getInt(0));
-                int width = 175;
-                int height = 284;
-                int w = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width, getResources().getDisplayMetrics());
-                int h = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height, getResources().getDisplayMetrics());
-                linearLayout.setLayoutParams(new ViewGroup.LayoutParams(w, h));
+                Button gear_button = book_example.findViewById(R.id.gear_button);
+                gear_button.setId(Integer.parseInt(userCursor.getString(0)));
 
-                button.setLayoutParams(new ViewGroup.LayoutParams(w, h));
-                //linearLayout.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-                button.setOnClickListener(new View.OnClickListener() {
+                gear_button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
 
-                        Intent intent = new Intent(MainActivity.this, Book_content.class);
-                        intent.putExtra("id", button.getId());
+                        Intent intent = new Intent(MainActivity.this, BookCreateOrUpdate.class);
+                        intent.putExtra("id", BookLayout.getId());
                         startActivity(intent);
                         finish(); //закрытие старого окна
                     }
                 });
-
+                BookList.addView(book_example);
                 Log.d(TAG, userCursor.getString(1));
-                linearLayout.addView(textView);
-                linearLayout.addView(textViewInfo);
-                linearLayoutFull.addView(button);
-                linearLayoutFull.addView(linearLayout);
-                linearLayoutTest.addView(linearLayoutFull);
             } while (userCursor.moveToNext());
         } else {
             Toast toast = Toast.makeText(getApplicationContext(),

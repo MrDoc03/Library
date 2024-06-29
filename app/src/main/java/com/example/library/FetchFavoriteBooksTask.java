@@ -15,7 +15,7 @@ import java.net.URL;
 public class FetchFavoriteBooksTask extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = FetchFavoriteBooksTask.class.getSimpleName();
-    private static final String API_URL = "http://192.168.0.102/api/favorite_books_api.php"; // Замените на ваш URL API
+    private static final String API_URL = "http://192.168.0.103/api/favorite_books_api.php"; // Замените на ваш URL API
     private DatabaseHelper dbHelper;
 
     public FetchFavoriteBooksTask(DatabaseHelper dbHelper) {

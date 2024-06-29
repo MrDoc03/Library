@@ -15,7 +15,7 @@ import java.net.URL;
 public class FetchReadingHistoriesTask extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = FetchReadingHistoriesTask.class.getSimpleName();
-    private static final String API_URL = "http://192.168.0.102/api/reading_histories_api.php"; // Замените на ваш URL API
+    private static final String API_URL = "http://192.168.0.103/api/reading_histories_api.php"; // Замените на ваш URL API
     private DatabaseHelper dbHelper;
 
     public FetchReadingHistoriesTask(DatabaseHelper dbHelper) {

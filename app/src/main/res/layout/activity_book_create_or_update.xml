@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/button_green"
+    android:orientation="vertical"
+    android:gravity="center">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="3dp">
+
+        <TextView
+            android:id="@+id/Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="22sp"
+            android:layout_marginTop="7dp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/Author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Author" android:textSize="22sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/Type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Type" android:textSize="22sp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:id="@+id/Deadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Deadline" android:textSize="22sp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Text" android:textSize="22sp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="22sp"
+            android:layout_marginTop="17dp"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.widget.EditText
+            android:id="@+id/TitleEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="-"/><android.widget.EditText
+        android:id="@+id/AuthorEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="-"/>
+        <android.widget.EditText
+            android:id="@+id/TypeEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="-"/>
+        <android.widget.EditText
+            android:id="@+id/DeadlineEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="-"/>
+        <android.widget.EditText
+            android:id="@+id/TextEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="-"/>
+        <android.widget.EditText
+            android:id="@+id/DescriptionEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="-"/>
+    </LinearLayout>
+</LinearLayout>
+
+    <android.widget.Button
+        android:id="@+id/confirm_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:background="#B4B4B4"
+        android:text="Подтвердить" />
+
+    <android.widget.Button
+        android:id="@+id/back_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:background="#B4B4B4"
+        android:text="Вернуться"/>
+
+</LinearLayout>

@@ -81,7 +81,7 @@ public class Account extends AppCompatActivity {
             return;
         }
 
-        String url = "http://192.168.0.102/api/reg_api.php";
+        String url = "http://192.168.0.103/api/reg_api.php";
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -119,7 +119,7 @@ public class Account extends AppCompatActivity {
             return;
         }
 
-        String url = "http://192.168.0.102/api/auth_api.php"; // Replace with your server URL
+        String url = "http://192.168.0.103/api/auth_api.php"; // Replace with your server URL
 
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -154,6 +154,7 @@ public class Account extends AppCompatActivity {
                 return params;
             }
         };
+
 
         queue.add(stringRequest);
     }
