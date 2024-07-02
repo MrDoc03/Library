@@ -164,4 +164,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_FAVORITE_BOOKS + " WHERE " + COL_EMAIL + " = ?", new String[]{email});
     }
+
+    public void deleteAllData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.delete(TABLE_USERS, null, null);
+            db.delete(TABLE_BOOKS, null, null);
+            db.delete(TABLE_READING_HISTORIES, null, null);
+            db.delete(TABLE_FAVORITE_BOOKS, null, null);
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
 }

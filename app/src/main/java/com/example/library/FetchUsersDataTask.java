@@ -14,7 +14,7 @@ import java.net.URL;
 
 public class FetchUsersDataTask extends AsyncTask<Void, Void, Void> {
     private static final String TAG = FetchBooksDataTask.class.getSimpleName();
-    private static final String API_URL = "http://192.168.0.102/api/users_api.php"; // Замените на ваш URL API
+    private static final String API_URL = "http://192.168.0.104/api/users_api.php"; // Замените на ваш URL API
     private DatabaseHelper dbHelper;
 
     public FetchUsersDataTask(DatabaseHelper dbHelper) {

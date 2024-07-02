@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Menu;
@@ -43,8 +44,13 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase db;
     private Cursor userCursor;
+    private LinearLayout booklist;
     private void initDatabase() {
-        databaseHelper = new DatabaseHelper(this); // Передайте контекст вашей активности или другого контекста
+        databaseHelper = new DatabaseHelper(this);
+
+        // Передайте контекст вашей активности или другого контекста
+
+        databaseHelper.deleteAllData();
         // Загрузка пользователей
         new FetchUsersDataTask(databaseHelper).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         // Загрузка книг
@@ -63,14 +69,10 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
-        LinearLayout linearLayoutTest = (LinearLayout) findViewById(R.id.test1);
+        LinearLayout linearLayoutTest = (LinearLayout) findViewById(R.id.booklist);
         linearLayoutTest.removeAllViews();
 
 
-
-
-        String sql = "select * from books";
-        DBselect(sql);
 
         EditText searchBarText = findViewById(R.id.editText1);
         searchBarText.setText("");
@@ -160,6 +162,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        String sql = "select * from books";
+        DBselect(sql);
+
     }
 
     @Override
@@ -210,8 +216,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void DBselect(String sql) {
-        LinearLayout linearLayoutTest = findViewById(R.id.test1); // Получаем ссылку на ваш LinearLayout
-        linearLayoutTest.removeAllViews();
+        LinearLayout booklist = findViewById(R.id.booklist); // Получаем ссылку на ваш LinearLayout
+        booklist.removeAllViews();
 
         // Проверяем, что база данных инициализирована
         if (databaseHelper == null) {
@@ -227,49 +233,38 @@ public class MainActivity extends AppCompatActivity {
 
             do { //крч этот цикл создает готовые окошки книг с картинкой и текстом
 
-                // Создаем новый экземпляр ImageButton для каждой книги
-                android.widget.ImageButton button = new android.widget.ImageButton(new ContextThemeWrapper(this.getBaseContext(), R.style.BookButton), null, 0);
-                LinearLayout linearLayout = new LinearLayout(new ContextThemeWrapper(MainActivity.this, R.style.BookLayoutText));
-                TextView textView = new TextView(new ContextThemeWrapper(this.getBaseContext(), R.style.BookText));
-                TextView textViewInfo = new TextView(new ContextThemeWrapper(this.getBaseContext(), R.style.BookTextInfo));
-                LinearLayout linearLayoutFull = new LinearLayout(new ContextThemeWrapper(MainActivity.this, R.style.BookLayout));
-                linearLayoutFull.setOrientation(LinearLayout.HORIZONTAL);
+                LayoutInflater inflater = LayoutInflater.from(this);
+                View bookItemView = inflater.inflate(R.layout.book_item, this.booklist, false);
 
-                textView.setText(userCursor.getString(1));
-                String info = userCursor.getString(3) + "\n" + userCursor.getString(4) + "\n" + userCursor.getString(5);
-                textViewInfo.setText(info);
+                TextView title = bookItemView.findViewById(R.id.Title);
+                TextView author = bookItemView.findViewById(R.id.Author);
+                TextView genre = bookItemView.findViewById(R.id.Genre);
+                ImageButton imageBook = bookItemView.findViewById(R.id.ImageBook);
 
-                String imageUrl = "http://192.168.0.102/TheSite/BookPics/" + userCursor.getString(2); // замените на ваш URL изображения
+                title.setText(userCursor.getString(1));
+                author.setText(userCursor.getString(3));
+                genre.setText(userCursor.getString(5));
 
-                Glide.with(MainActivity.this)
-                        .load(imageUrl)
-                        .into(button);
-
-                button.setId(userCursor.getInt(0));
-                int width = 175;
-                int height = 284;
-                int w = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width, getResources().getDisplayMetrics());
-                int h = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height, getResources().getDisplayMetrics());
-                linearLayout.setLayoutParams(new ViewGroup.LayoutParams(w, h));
-
-                button.setLayoutParams(new ViewGroup.LayoutParams(w, h));
-                //linearLayout.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-                button.setOnClickListener(new View.OnClickListener() {
+                imageBook.setId(userCursor.getInt(0));
+                imageBook.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
 
                         Intent intent = new Intent(MainActivity.this, Book_content.class);
-                        intent.putExtra("id", button.getId());
+                        intent.putExtra("id", imageBook.getId());
                         startActivity(intent);
                         finish(); //закрытие старого окна
                     }
                 });
 
+
+                String imageUrl = "http://192.168.0.104/TheSite/BookPics/" + userCursor.getString(2); // замените на ваш URL изображения
+
+                Glide.with(MainActivity.this)
+                        .load(imageUrl)
+                        .into(imageBook);
+
                 Log.d(TAG, userCursor.getString(1));
-                linearLayout.addView(textView);
-                linearLayout.addView(textViewInfo);
-                linearLayoutFull.addView(button);
-                linearLayoutFull.addView(linearLayout);
-                linearLayoutTest.addView(linearLayoutFull);
+                booklist.addView(bookItemView);
             } while (userCursor.moveToNext());
         } else {
             Toast toast = Toast.makeText(getApplicationContext(),
